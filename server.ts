@@ -1,6 +1,5 @@
 import express from "express";
 import path from "path";
-import { createServer as createViteServer } from "vite";
 import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 
@@ -10,6 +9,17 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json({ limit: "50mb" }));
+
+// Enable CORS for Vercel deployment
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 // Initialize Gemini API client on server side
 let ai: GoogleGenAI | null = null;
@@ -136,12 +146,12 @@ const SAMPLE_DOCS = {
 // API Endpoints
 
 // 1. Health check
-app.get("/api/health", (req, res) => {
+app.get(["/api/health", "/health"], (req, res) => {
   res.json({ status: "ok", service: "pathnovo-delta-chat", version: "1.0.0" });
 });
 
 // 2. Metrics & Telemetry
-app.get("/api/metrics", (req, res) => {
+app.get(["/api/metrics", "/metrics"], (req, res) => {
   const avgLatency = metrics.latencies.length
     ? (metrics.latencies.reduce((a, b) => a + b, 0) / metrics.latencies.length).toFixed(1)
     : 0;
@@ -159,7 +169,7 @@ app.get("/api/metrics", (req, res) => {
 });
 
 // LLM Routing Configuration Status
-app.get("/api/llm/status", (req, res) => {
+app.get(["/api/llm/status", "/llm/status"], (req, res) => {
   res.json({
     routing: {
       primary: LLM_PRIMARY_PROVIDER,
@@ -177,10 +187,10 @@ app.get("/api/llm/status", (req, res) => {
 });
 
 // 3. Document Ingestion
-app.post("/api/ingest", (req, res) => {
+app.post(["/api/ingest", "/ingest"], (req, res) => {
   const start = Date.now();
   metrics.totalRequests++;
-  const { revision = "RevA", format = "pdf_native" } = req.body;
+  const { revision = "RevA", format = "pdf_native" } = req.body || {};
 
   const doc = revision === "RevB" ? SAMPLE_DOCS.RevB : SAMPLE_DOCS.RevA;
   const duration = Date.now() - start;
@@ -194,7 +204,7 @@ app.post("/api/ingest", (req, res) => {
 });
 
 // 4. Delta Engine Computation
-app.post("/api/delta/compare", (req, res) => {
+app.post(["/api/delta/compare", "/delta/compare"], (req, res) => {
   const start = Date.now();
   metrics.totalRequests++;
   metrics.deltasComputed++;
@@ -431,7 +441,7 @@ Grounded P&ID Revision Context:
 }
 
 // 5. Grounded Chat Query with Multi-LLM Provider Routing
-app.post("/api/chat/query", async (req, res) => {
+app.post(["/api/chat/query", "/chat/query"], async (req, res) => {
   const start = Date.now();
   metrics.totalRequests++;
 
@@ -480,7 +490,7 @@ app.post("/api/chat/query", async (req, res) => {
 });
 
 // 6. Run Evaluation Harness
-app.get("/api/eval/run", (req, res) => {
+app.get(["/api/eval/run", "/eval/run"], (req, res) => {
   const start = Date.now();
   metrics.totalRequests++;
 
@@ -520,6 +530,7 @@ app.get("/api/eval/run", (req, res) => {
 // Vite middleware for development / Express static in production
 async function startServer() {
   if (process.env.NODE_ENV !== "production") {
+    const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true, hmr: false },
       appType: "spa",
