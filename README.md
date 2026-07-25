@@ -68,22 +68,134 @@ An industrial-grade engineering document intelligence platform designed to compa
 
 ```
 .
-├── .env.example               # Environment variable templates (no secrets)
-├── .gitignore                 # Excludes credentials, build artifacts, node_modules
-├── Dockerfile                 # Production multi-stage Docker build container
-├── README.md                  # System documentation
-├── dist/                      # Production build output (generated)
-├── index.html                 # Single page application template
-├── package.json               # Node.js dependencies and lifecycle scripts
-├── server.ts                  # Express full-stack server entrypoint
-├── src/                       # Frontend React application & components
-│   ├── App.tsx                # Main container component
-│   ├── components/            # UI components (Viewer, Chat, Telemetry, Delta Table)
-│   ├── canonical/             # Data structure schemas and types
-│   ├── delta/                 # Alignment and difference calculation engines
-│   ├── ingest/                # Document extraction adapters
-│   └── main.tsx               # Client entrypoint
-└── vite.config.ts             # Vite build and development configuration
+├── .github/                       # GitHub Actions CI/CD workflows
+│   └── workflows/
+│       ├── cd.yml                 # Continuous deployment workflow
+│       └── ci.yml                 # Continuous integration testing pipeline
+├── api/                           # Vercel Serverless API handler
+│   └── index.ts                   # Exported Express API handler for Vercel
+├── assets/                        # Design assets and project artifacts
+├── eval/                          # Evaluation harness & metrics benchmarking
+│   ├── datasets/                  # Ground truth annotations and test drawing pairs
+│   │   ├── ground_truth.json      # Benchmark validation dataset
+│   │   └── sample_pairs.json      # Sample revision pairs for testing
+│   ├── __init__.py
+│   ├── evaluator.py              # Precision, recall, and IoU metric evaluators
+│   ├── metrics.py                # Quality metric calculations
+│   ├── report_generator.py       # Benchmark evaluation summary generator
+│   └── run_eval.py               # CLI runner for evaluation harness
+├── public/                        # Static web assets
+│   └── favicon.svg                # Application favicon
+├── scripts/                       # Automation and utility scripts
+│   ├── eval_pipeline.sh          # Pipeline evaluation runner script
+│   ├── run_demo.sh               # Local demo launch script
+│   ├── seed_database.py          # Sample data generator script
+│   └── setup.sh                  # Workspace setup script
+├── src/                           # Source application code
+│   ├── api/                       # Backend API modules & endpoints
+│   │   ├── routes/                # Express / Python API route definitions
+│   │   │   ├── __init__.py
+│   │   │   ├── chat.py            # RAG chat query endpoints
+│   │   │   ├── delta.py           # Revision comparison endpoints
+│   │   │   ├── health.py          # Service health check endpoints
+│   │   │   └── ingest.py          # Document ingestion endpoints
+│   │   ├── __init__.py
+│   │   ├── dependencies.py       # API route dependencies
+│   │   └── schemas.py             # Request & response data schemas
+│   ├── canonical/                 # Bounding-box and entity domain models
+│   │   ├── __init__.py
+│   │   ├── model.py               # Element taxonomy & bounding box interfaces
+│   │   ├── serializer.py          # Serialization helpers
+│   │   └── validator.py           # Coordinate & entity validators
+│   ├── chat/                      # RAG grounding & multi-LLM engine
+│   │   ├── __init__.py
+│   │   ├── answer.py              # Answer synthesis with citation grounding
+│   │   ├── context.py             # Context window packing & formatting
+│   │   ├── grounding.py           # Bounding-box spatial citation mapper
+│   │   ├── indexer.py             # Spatial entity indexer
+│   │   ├── llm_client.py          # Gemini & fallback provider client
+│   │   └── retriever.py           # Spatial & semantic context retriever
+│   ├── components/                # React UI components
+│   │   ├── DeltaMatrixTable.tsx   # Interactive revision delta matrix table
+│   │   ├── EvaluationPanel.tsx    # Evaluation harness & benchmark viewer
+│   │   ├── GroundedChatModal.tsx  # Fullscreen grounded chat dialog
+│   │   ├── GroundedChatPanel.tsx  # Inline RAG chat panel with spatial citations
+│   │   ├── Header.tsx             # Application navigation header
+│   │   ├── HomeOverview.tsx       # System overview & metrics dashboard
+│   │   ├── IngestionSelector.tsx  # Document pair selector component
+│   │   ├── ObservabilityPanel.tsx # System metrics & telemetry dashboard
+│   │   ├── PIDCanvasViewer.tsx    # Canvas rendering P&ID drawings & overlays
+│   │   └── ResultNavigator.tsx    # Delta filtering and navigation controls
+│   ├── delta/                     # Spatial alignment & change detection engine
+│   │   ├── __init__.py
+│   │   ├── aligner.py             # Multi-factor Hungarian / IoU aligner
+│   │   ├── classifier.py          # ADDED/REMOVED/MODIFIED/MOVED classifier
+│   │   ├── confidence.py          # Confidence score calculator
+│   │   ├── engine.py              # Core delta engine pipeline
+│   │   └── report.py              # Structured delta report synthesizer
+│   ├── ingest/                    # Document ingestion adapters
+│   │   ├── __init__.py
+│   │   ├── base.py                # Abstract format adapter interface
+│   │   ├── dwg.py                 # CAD DWG/DXF extraction adapter
+│   │   ├── pdf_native.py          # Vector PDF text & vector extractor
+│   │   ├── pdf_scanned.py         # Scanned image OCR/vector extractor
+│   │   └── registry.py            # Format adapter registry
+│   ├── observability/             # Telemetry, logging & distributed tracing
+│   │   ├── __init__.py
+│   │   ├── logger.py              # Structured JSON logger
+│   │   ├── metrics.py             # Performance & latency tracker
+│   │   ├── middleware.py         # Request tracing middleware
+│   │   ├── telemetry.py           # Cost & token tracking
+│   │   └── tracer.py              # Span execution tracer
+│   ├── utils/                     # Common utility functions
+│   │   ├── __init__.py
+│   │   ├── cache.py               # Response & computation caching
+│   │   ├── file_utils.py          # File path & I/O helpers
+│   │   ├── helpers.py             # Generic helper functions
+│   │   ├── text_utils.py          # String matching & Levenshtein helpers
+│   │   └── validators.py          # Data structure validation helpers
+│   ├── App.tsx                    # Main React application component
+│   ├── config.py                  # System configuration parameters
+│   ├── exceptions.py              # Custom error & exception definitions
+│   ├── index.css                  # Global Tailwind CSS styles
+│   ├── main.py                    # Python engine entrypoint
+│   ├── main.tsx                   # Client-side React entrypoint
+│   └── types.ts                   # Global TypeScript types & interfaces
+├── tests/                         # Automated test suite
+│   ├── integration/               # Integration tests
+│   │   ├── test_api.py            # API endpoint integration tests
+│   │   └── test_pipeline.py       # End-to-end processing pipeline tests
+│   ├── unit/                      # Unit tests
+│   │   ├── test_chat.py           # Chat & grounding unit tests
+│   │   ├── test_delta.py          # Spatial alignment unit tests
+│   │   └── test_ingest.py         # Document ingestion unit tests
+│   └── conftest.py                # Pytest configuration & fixtures
+├── web/                           # Streamlit / Web UI interface
+│   ├── components/                # Streamlit custom UI widgets
+│   │   └── ui_components.py
+│   ├── pages/                     # Multi-page web dashboard
+│   │   ├── 1_Upload.py            # Document upload page
+│   │   ├── 2_Delta.py             # Revision comparison page
+│   │   └── 3_Chat.py              # Interactive grounded chat page
+│   ├── __init__.py
+│   └── app.py                     # Streamlit web app entrypoint
+├── .env.example                   # Environment variable template
+├── .gitignore                     # Git exclusion rules
+├── .pre-commit-config.yaml        # Pre-commit hook configurations
+├── Dockerfile                     # Multi-stage container build definition
+├── Makefile                       # Development & build automation commands
+├── README.md                      # Complete system documentation
+├── bun.lock                       # Bun lockfile
+├── docker-compose.yml             # Local multi-container compose configuration
+├── index.html                     # HTML SPA entrypoint
+├── metadata.json                  # Application metadata & frame permissions
+├── package.json                   # Node.js dependencies and lifecycle scripts
+├── pyproject.toml                 # Python project & dependencies configuration
+├── server.ts                      # Express full-stack server & API routes
+├── setup.py                       # Python package setup script
+├── tsconfig.json                  # TypeScript compiler options
+├── vercel.json                    # Vercel deployment & routing config
+└── vite.config.ts                 # Vite build & development setup
 ```
 
 ---
