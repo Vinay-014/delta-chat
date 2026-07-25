@@ -2,7 +2,7 @@
 
 An industrial-grade engineering document intelligence platform designed to compare Piping and Instrumentation Diagram (P&ID) revision documents, compute precise spatial and categorical deltas, synthesize structured revision reports, and deliver spatially grounded conversational context using multi-LLM routing with primary Gemini 2.5 Flash and resilient fallbacks.
 
----
+
 
 ## Architecture Overview
 
@@ -37,7 +37,7 @@ An industrial-grade engineering document intelligence platform designed to compa
                                 +-------------+-------------+
 ```
 
----
+
 
 ## Core Capabilities
 
@@ -62,7 +62,7 @@ An industrial-grade engineering document intelligence platform designed to compa
 * Distributed Tracing: Logs execution spans and latencies across ingestion, delta calculation, and LLM inference.
 * Cost & Token Tracking: Computes real-time token consumption and estimated API usage metrics.
 
----
+
 
 ## Project Structure
 
@@ -198,7 +198,7 @@ An industrial-grade engineering document intelligence platform designed to compa
 └── vite.config.ts                 # Vite build & development setup
 ```
 
----
+
 
 ## Environment Variables and Security
 
@@ -234,7 +234,7 @@ API_HOST=0.0.0.0
 API_PORT=3000
 ```
 
----
+
 
 ## Local Development Setup
 
@@ -277,7 +277,7 @@ API_PORT=3000
    npm run start
    ```
 
----
+
 
 ## Deployment to Google Cloud Run (Free Tier)
 
@@ -292,7 +292,7 @@ By configuring cold-start scale-to-zero and setting resource allocations within 
 1. A Google Cloud Platform account with billing enabled (required by GCP to activate free tier resources).
 2. Installed and initialized Google Cloud CLI (`gcloud`).
 
----
+
 
 ### Step-by-Step Deployment Commands
 
@@ -357,7 +357,7 @@ Service [pid-delta-chat] revision [pid-delta-chat-00001-abc] has been deployed a
 Service URL: https://pid-delta-chat-xxxxxx-uc.a.run.app
 ```
 
----
+
 
 ## Best Practices for Cost Prevention on GCP
 
@@ -371,7 +371,7 @@ Service URL: https://pid-delta-chat-xxxxxx-uc.a.run.app
    # --set-secrets GEMINI_API_KEY=GEMINI_API_KEY:latest
    ```
 
----
+
 
 ## GitHub Repository Push Checklist
 
@@ -387,8 +387,4 @@ git commit -m "feat: prepare production release with sanitized environment, upda
 git push origin main
 ```
 
----
 
-## License
-
-This project is licensed under the MIT License.
