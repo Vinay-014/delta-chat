@@ -1,0 +1,6 @@
+{
+  "name": "P&ID Delta Chat Engine",
+  "description": "Production-grade P&ID document revision delta engine and grounded chat system with spatial citations, hybrid retrieval, and observability.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

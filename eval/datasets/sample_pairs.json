@@ -1,0 +1,8 @@
+[
+  {
+    "pair_id": "pair_001",
+    "doc_a": "data/samples/pid_101_revA.pdf",
+    "doc_b": "data/samples/pid_101_revB.pdf",
+    "description": "Crude Distillation Unit P&ID Revision A vs B"
+  }
+]

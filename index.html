@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>P&ID Delta Chat Engine</title>
+    <script>
+      (function() {
+        // Intercept WebSocket creation for Vite HMR in dev environment where HMR is disabled
+        var NativeWebSocket = window.WebSocket;
+        if (NativeWebSocket) {
+          function SafeWebSocket(url, protocols) {
+            var urlStr = String(url || '');
+            if (urlStr.indexOf('vite') !== -1 || urlStr.indexOf('/ws') !== -1 || urlStr.indexOf('ws://') !== -1 || urlStr.indexOf('wss://') !== -1) {
+              return {
+                readyState: 3, // CLOSED
+                bufferedAmount: 0,
+                extensions: '',
+                protocol: '',
+                binaryType: 'blob',
+                addEventListener: function() {},
+                removeEventListener: function() {},
+                dispatchEvent: function() { return false; },
+                send: function() {},
+                close: function() {},
+                onerror: null,
+                onclose: null,
+                onopen: null,
+                onmessage: null
+              };
+            }
+            return new NativeWebSocket(url, protocols);
+          }
+          SafeWebSocket.prototype = NativeWebSocket.prototype;
+          SafeWebSocket.CONNECTING = 0;
+          SafeWebSocket.OPEN = 1;
+          SafeWebSocket.CLOSING = 2;
+          SafeWebSocket.CLOSED = 3;
+          window.WebSocket = SafeWebSocket;
+        }
+
+        // Suppress benign Vite HMR websocket noise
+        var origError = console.error;
+        console.error = function() {
+          var msg = Array.prototype.slice.call(arguments).map(function(a) {
+            return String(a && a.message ? a.message : a);
+          }).join(' ');
+          if (msg.indexOf('WebSocket') !== -1 || msg.indexOf('vite') !== -1) {
+            return;
+          }
+          origError.apply(console, arguments);
+        };
+
+        var origWarn = console.warn;
+        console.warn = function() {
+          var msg = Array.prototype.slice.call(arguments).map(function(a) {
+            return String(a && a.message ? a.message : a);
+          }).join(' ');
+          if (msg.indexOf('WebSocket') !== -1 || msg.indexOf('vite') !== -1) {
+            return;
+          }
+          origWarn.apply(console, arguments);
+        };
+
+        window.addEventListener('unhandledrejection', function(event) {
+          var reasonStr = String(event.reason && event.reason.message ? event.reason.message : event.reason || '');
+          if (reasonStr.indexOf('WebSocket') !== -1 || reasonStr.indexOf('vite') !== -1) {
+            event.preventDefault();
+            if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          }
+        }, true);
+
+        window.addEventListener('error', function(event) {
+          var msg = String(event.message || '');
+          if (msg.indexOf('WebSocket') !== -1 || msg.indexOf('vite') !== -1) {
+            event.preventDefault();
+            if (event.stopImmediatePropagation) event.stopImmediatePropagation();
+          }
+        }, true);
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..900&family=Google+Sans:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

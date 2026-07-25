@@ -1,0 +1,34 @@
+[
+  {
+    "pair_id": "pair_001",
+    "expected_deltas": [
+      {
+        "change_type": "ADDED",
+        "element_type": "VALVE",
+        "text": "V-102"
+      },
+      {
+        "change_type": "MODIFIED",
+        "element_type": "PIPELINE",
+        "text": "4\"-CRU-1001-CS"
+      },
+      {
+        "change_type": "MOVED",
+        "element_type": "PUMP",
+        "text": "P-101A"
+      }
+    ],
+    "eval_questions": [
+      {
+        "question": "What valves were added in Rev B?",
+        "expected_answer_contains": ["V-102"],
+        "expected_citation": "RevB:P1:VALVE"
+      },
+      {
+        "question": "Was pipeline 3\"-CRU-1001-CS modified?",
+        "expected_answer_contains": ["4\"-CRU-1001-CS", "modified"],
+        "expected_citation": "RevB:P1:PIPELINE"
+      }
+    ]
+  }
+]
