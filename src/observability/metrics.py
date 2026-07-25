@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 class PrometheusMetrics:
     """Prometheus metrics registry and accumulator."""

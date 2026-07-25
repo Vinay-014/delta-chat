@@ -1,5 +1,5 @@
 import json
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from jinja2 import Template
 from pydantic import BaseModel, Field
 from src.canonical.model import DocumentElement

@@ -1,6 +1,5 @@
 import os
 import hashlib
-from typing import str
 
 def compute_file_hash(file_path: str) -> str:
     """Compute SHA256 checksum of a file."""
