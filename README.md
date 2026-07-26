@@ -1,4 +1,4 @@
-# Delta Chat: P&ID Revision Analysis and Grounded Chat Engine
+# Delta Chat Engine: P&ID Revision Analysis and Grounded Chat Engine
 
 An industrial-grade engineering document intelligence platform designed to compare Piping and Instrumentation Diagram (P&ID) revision documents, compute precise spatial and categorical deltas, synthesize structured revision reports, and deliver spatially grounded conversational context using multi-LLM routing with primary Gemini 2.5 Flash and resilient fallbacks.
 
